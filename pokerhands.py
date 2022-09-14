@@ -10,7 +10,7 @@ import random
 * straight
 * flush
 * full house 
-* four of a kind
+* four of a kinddqdq
 * straight flush
 * straight royal flush
 
