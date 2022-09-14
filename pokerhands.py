@@ -1,5 +1,6 @@
 import math
 import random
+from itertools import combinations
 
 
 """ 
@@ -24,6 +25,9 @@ class Card:
     def __init__(self, c, n):
         self.color = c
         self.number = n
+    
+    def __repr__(self):
+        return f("{self.color} + " ", {self.number}")
 
 
 def main():
@@ -38,6 +42,13 @@ def main():
     print_cards(community_cards, "Community cards: ")
 
     print("Pair:", check_same_number(community_cards+hand, 2))
+
+
+    comb = combinations(deck, 2)
+  
+    # Print the obtained combinations
+    for i in list(comb):
+        print (i)
 
 def print_cards(cards, description):
 
