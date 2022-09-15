@@ -64,19 +64,6 @@ def print_cards(cards, description):
     print("\n")
 
 
-def check_same_number(cards, amount):
-    pulled_cards = []
-    length = len(cards)
-
-    for i in range(0, length-1):
-        pulled_card = cards.pop(0)
-        pulled_cards.append(pulled_card)
-
-        for j in range(0, len(pulled_cards)-1):
-            if pulled_cards[j].number == cards[0].number:
-                return 1
-    
-    return 0
 
 def one_pair(combination) -> int:
     for i in range(len(combination)):    
