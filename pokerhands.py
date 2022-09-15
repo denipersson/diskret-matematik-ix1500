@@ -37,22 +37,14 @@ def main():
     hand = pull_cards_from_deck(deck, 2)
 
     #print_cards(hand, "Hand: ")
-    community_cards = pull_cards_from_deck(deck, 3)
+    #community_cards = pull_cards_from_deck(deck, 3)
 
     #print_cards(community_cards, "Community cards: ")
 
     #print("Pair:", check_same_number(community_cards+hand, 2))
 
+    calculate_prob(hand, deck)
 
-    comb = combinations(deck, 2)
-  
-    # Print the obtained combinations
-    for i in list(comb):
-        print (i)
-
-    test_flush_deck = [Card("hjärter", 1),Card("poop", 10),Card("hjärter", 11),Card("poop", 12),Card("hjärter", 13),Card("hjärter", 5), Card("hjärter", 3)]
-
-    print(check_straight(test_flush_deck))
 
 def print_cards(cards, description):
 
@@ -63,20 +55,40 @@ def print_cards(cards, description):
 
     print("\n")
 
+def calculate_prob(hand, deck):
 
-def check_same_number(cards, amount):
-    pulled_cards = []
-    length = len(cards)
+    print(hand)
+    unknowns = combinations(deck, 5)
 
-    for i in range(0, length-1):
-        pulled_card = cards.pop(0)
-        pulled_cards.append(pulled_card)
+    tuples = []
 
-        for j in range(0, len(pulled_cards)-1):
-            if pulled_cards[j].number == cards[0].number:
-                return 1
+    for j in combinations(deck, 5):
+        tuples.append(unknowns.__next__())
+
+    found_pairs = 0
+    found_two_pair = 0
+    found_three_of = 0
+    found_royal_flushes = 0
+
+    for i in range(len(tuples)):
+        combo = []
+        for j in range(5):
+            combo.append(tuples[i][j])
+
+        found_pairs += one_pair(combo+hand)
+        found_two_pair += two_pairs(combo+hand)
+        found_three_of += three_of_a_kind(combo+hand)
+        found_royal_flushes += royal_straight_flush(combo+hand)
+
     
-    return 0
+    print("Probabilities %:")
+    print("")
+    #print("One pair: ", found_pairs/len(tuples))
+    print("One pair: ", found_pairs/(len(tuples)+found_pairs))
+    print("Two pairs: ", found_two_pair/(len(tuples)+found_two_pair))
+    print("Three of a kind: ", found_three_of/(len(tuples)+found_three_of))
+    print("Royal straight flush: ", found_royal_flushes/(len(tuples)+found_royal_flushes))
+
 
 def one_pair(combination) -> int:
     for i in range(len(combination)):    
@@ -84,7 +96,7 @@ def one_pair(combination) -> int:
             if j >= len(combination):
                 break
             if combination[i].number == combination[j].number:
-                print(f"{combination[i].number} | {combination[j].number}")
+                #print(f"{combination[i].number} | {combination[j].number}")
                 return 1
     return 0
             
@@ -118,6 +130,34 @@ def three_of_a_kind(combinations):
             if(cards >= 3):
                 found = 1
                 break
+
+    return found 
+
+def full_house(combinations):
+    combinations.sort(key= attrgetter('number'))
+
+    found = 0
+
+    for i in range(len(combinations)):
+
+        cards = 1
+        for j in range(i+1, len(combinations)):
+
+            if combinations[j].number != combinations[i].number:
+                break
+            else:
+                cards += 1
+
+            if(cards >= 3):
+                found = 1
+                combinations.remove(combinations[j])
+                combinations.remove(combinations[j-1])
+                combinations.remove(combinations[j-2])
+                break
+
+
+    if(found == 1):
+        found = one_pair(combinations)
 
     return found 
 
