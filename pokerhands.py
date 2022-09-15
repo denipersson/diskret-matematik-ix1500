@@ -32,18 +32,13 @@ class Card:
 
 def main():
     deck = generate_deck()
-    #print_cards(deck, "Deck: ")
-
     hand = pull_cards_from_deck(deck, 2)
-
-    #print_cards(hand, "Hand: ")
-    #community_cards = pull_cards_from_deck(deck, 3)
-
-    #print_cards(community_cards, "Community cards: ")
-
-    #print("Pair:", check_same_number(community_cards+hand, 2))
-
-    calculate_prob(hand, deck)
+    print("First round:")
+    test_hand = [Card("Ass", 2), Card("Ass", 1), Card("Ass", 2), Card("Ass", 1)]
+    calculate_prob(hand, deck, 5)
+    hand += pull_cards_from_deck(deck, 3)
+    print("Second round:")
+    calculate_prob(hand, deck, 2)
 
 def print_cards(cards, description):
 
@@ -54,39 +49,54 @@ def print_cards(cards, description):
 
     print("\n")
 
-def calculate_prob(hand, deck):
+def calculate_prob(hand, deck, community_card_count):
 
     print(hand)
-    unknowns = combinations(deck, 5)
+    unknowns = combinations(deck, community_card_count)
 
     tuples = []
 
-    for j in combinations(deck, 5):
+    for j in combinations(deck, community_card_count):
         tuples.append(unknowns.__next__())
 
     found_pairs = 0
     found_two_pair = 0
     found_three_of = 0
     found_royal_flushes = 0
+    found_flushes = 0
+    found_straight_flushes = 0
+    found_straight = 0
+    found_full_house = 0
+    found_four_of_a_kind = 0
 
     for i in range(len(tuples)):
         combo = []
-        for j in range(5):
+        for j in range(community_card_count):
             combo.append(tuples[i][j])
 
         found_pairs += one_pair(combo+hand)
         found_two_pair += two_pairs(combo+hand)
         found_three_of += three_of_a_kind(combo+hand)
         found_royal_flushes += royal_straight_flush(combo+hand)
+        found_straight += check_straight(combo+hand)
+        found_flushes += check_flush(combo+hand)
+        found_straight_flushes += check_straight_flush(combo+hand)
+        found_full_house += full_house(combo+hand)
+        found_four_of_a_kind += four_of_a_kind(combo+hand)
 
     
-    print("Probabilities %:")
+    print("Probabilities:")
     print("")
-    #print("One pair: ", found_pairs/len(tuples))
-    print("One pair: ", found_pairs/(len(tuples)+found_pairs))
-    print("Two pairs: ", found_two_pair/(len(tuples)+found_two_pair))
-    print("Three of a kind: ", found_three_of/(len(tuples)+found_three_of))
-    print("Royal straight flush: ", found_royal_flushes/(len(tuples)+found_royal_flushes))
+    print("One pair: ", found_pairs/len(tuples))
+    print("Two pairs: ", found_two_pair/len(tuples))
+    print("Three of a kind: ", found_three_of/len(tuples))
+    print("Straight: ", found_straight/len(tuples))
+    print("Flush: ", found_flushes/len(tuples))
+    print("Full house: ", found_full_house/len(tuples))
+    print("Four of a kind: ", found_four_of_a_kind/len(tuples))
+    print("Straight flush: ", found_straight_flushes/len(tuples))
+    print("Royal straight flush: ", found_royal_flushes/len(tuples))
+    print("")
 
 
 def one_pair(combination) -> int:
@@ -98,18 +108,34 @@ def one_pair(combination) -> int:
                 #print(f"{combination[i].number} | {combination[j].number}")
                 return 1
     return 0
-            
+
+
 def two_pairs(combination) -> int:
-    for i in range(len(combination)):
+    found_pairs = 0
+    
+    for i in range(len(combination)):    
         for j in range(i+1,len(combination)):
             if j >= len(combination):
                 break
             if combination[i].number == combination[j].number:
                 combination.remove(combination[i])
-                combination.remove(combination[j-1]) ##oor
-    if(one_pair(combination) == 1):
+                combination.remove(combination[j-1])
+                found_pairs+= 1
+
+    for i in range(len(combination)):    
+        for j in range(i+1,len(combination)):
+            if j >= len(combination):
+                break
+            if combination[i].number == combination[j].number:
+                found_pairs+= 1
+                break
+
+    if found_pairs >= 2:
         return 1
+
     return 0
+
+
             
 def three_of_a_kind(combinations):
     combinations.sort(key= attrgetter('number'))
@@ -131,6 +157,29 @@ def three_of_a_kind(combinations):
                 break
 
     return found 
+
+           
+def four_of_a_kind(combinations):
+    combinations.sort(key= attrgetter('number'))
+
+    found = 0
+
+    for i in range(len(combinations)):
+
+        cards = 1
+        for j in range(i+1, len(combinations)):
+
+            if combinations[j].number != combinations[i].number:
+                break
+            else:
+                cards += 1
+
+            if(cards >= 4):
+                found = 1
+                break
+
+    return found 
+
 
 def full_house(combinations):
     combinations.sort(key= attrgetter('number'))
