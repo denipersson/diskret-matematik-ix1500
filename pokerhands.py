@@ -78,6 +78,50 @@ def check_same_number(cards, amount):
     
     return 0
 
+def one_pair(combination) -> int:
+    for i in range(len(combination)):    
+        for j in range(i+1,len(combination)):
+            if j >= len(combination):
+                break
+            if combination[i].number == combination[j].number:
+                print(f"{combination[i].number} | {combination[j].number}")
+                return 1
+    return 0
+            
+def two_pairs(combination) -> int:
+    for i in range(len(combination)):
+        for j in range(i+1,len(combination)):
+            if j >= len(combination):
+                break
+            if combination[i].number == combination[j].number:
+                combination.remove(combination[i])
+                combination.remove(combination[j-1]) ##oor
+    if(one_pair(combination) == 1):
+        return 1
+    return 0
+            
+def three_of_a_kind(combinations):
+    combinations.sort(key= attrgetter('number'))
+
+    found = 0
+
+    for i in range(len(combinations)):
+
+        cards = 1
+        for j in range(i+1, len(combinations)):
+
+            if combinations[j].number != combinations[i].number:
+                break
+            else:
+                cards += 1
+
+            if(cards >= 3):
+                found = 1
+                break
+
+    return found 
+
+
 def check_flush(combinations):
 
     flush = 0
