@@ -56,7 +56,6 @@ def print_cards(cards, description):
 
 def calculate_prob(hand, deck):
 
-<<<<<<< HEAD
     print(hand)
     unknowns = combinations(deck, 5)
 
@@ -89,8 +88,6 @@ def calculate_prob(hand, deck):
     print("Three of a kind: ", found_three_of/(len(tuples)+found_three_of))
     print("Royal straight flush: ", found_royal_flushes/(len(tuples)+found_royal_flushes))
 
-=======
->>>>>>> 33e75dff4d2493083f525dc1750ad31f52ed599c
 
 def one_pair(combination) -> int:
     for i in range(len(combination)):    
