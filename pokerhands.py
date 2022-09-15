@@ -27,7 +27,7 @@ class Card:
         self.number = n
     
     def __repr__(self):
-        return f"{self.color},  {self.number}"
+        return f"{self.color}, {self.number}"
 
 
 def main():
