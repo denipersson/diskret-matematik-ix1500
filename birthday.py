@@ -25,7 +25,7 @@ def fn_generate_random_birthdays(n):
     first = datetime(2022, 1, 1)
     birthdays = [(first + timedelta(days=random.randint(0,
                        366))).strftime("%m/%d/%Y") for i in range(n)]
-    return sorted(birthday)
+    return sorted(birthdays)
 
 def graph_probability():
 
